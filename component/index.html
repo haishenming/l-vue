@@ -2,50 +2,25 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>父子组件传值</title>
+    <title>参数校验与非props特征</title>
     <script src="./vue.js"></script>
 </head>
 <body>
 <div id="root">
-   <counter :count="0" @inc="handleIncrease"></counter>
-   <counter :count="0" @inc="handleIncrease"></counter>
-    <div>total: {{total}}</div>
+    <child content="hello world"></child>
 </div>
 
 <script>
-    // 局部组件
-    var counter = {
-    	props: ['count'],
-        // 不要直接修改父组件传递的值， 所以需要一个中间值做过度
-        data: function() {
-    		return {
-    			number: this.count
-            }
-        },
-    	template: '<div @click="handleClick">{{number}}</div>',
-		methods: {
-			handleClick: function () {
-                this.number ++
-                this.$emit('inc', 1)
-			}
-		}
-    }
 
+    Vue.component('child', {
+    	template: '<div>{{content}}</div>>',
+        props: {
+    		content: [String, Number],   // 约束content必须为String或数字类型
+        },
+    })
 
 	var vm = new Vue({
 		el: "#root",
-        data: {
-            total: 0
-        },
-        components: {
-            counter: counter
-        },
-        methods: {
-			handleIncrease: function (step) {
-                this.total += step
-			}
-        }
-
 	})
 </script>
 </body>
