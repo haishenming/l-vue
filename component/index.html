@@ -2,21 +2,34 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>参数校验与非props特征</title>
+    <title>非父子组件间传值(bus/总线/发布订阅模式/观察者模式)</title>
     <script src="./vue.js"></script>
 </head>
 <body>
 <div id="root">
-    <child content="hello world"></child>
+    <child content="Dell"></child>
+    <child content="Lee"></child>
 </div>
 
 <script>
+    Vue.prototype.bus = new Vue()
 
     Vue.component('child', {
-    	template: '<div>{{content}}</div>>',
+    	template: '<div @click="handleClick">{{content}}</div>>',
         props: {
-    		content: [String, Number],   // 约束content必须为String或数字类型
+    		content: String,
         },
+        methods: {
+    		handleClick: function () {
+                this.bus.$emit('change', this.content)
+			}
+        },
+        mounted: function () {
+			var this_ = this
+			this.bus.$on('change', function (msg) {
+				this_.content = msg
+			})
+		}
     })
 
 	var vm = new Vue({
